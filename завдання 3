@@ -1,0 +1,167 @@
+class EvenIndexIterator:
+    """
+    Ітератор, який повертає елементи з парними індексами структури даних
+    """
+    
+    def __init__(self, data):
+        """
+        Ініціалізація ітератора
+        
+        Args:
+            data: структура даних (список, рядок, кортеж)
+        """
+        try:
+            if not hasattr(data, '__getitem__'):
+                raise TypeError("Структура даних повинна підтримувати індексацію")
+            
+            self.data = data
+            self.index = 0
+            self.max_index = len(data) - 1
+            
+        except TypeError as e:
+            print(f"Помилка ініціалізації: {e}")
+            self.data = []
+            self.index = 0
+            self.max_index = -1
+        except Exception as e:
+            print(f"Неочікувана помилка: {e}")
+            self.data = []
+            self.index = 0
+            self.max_index = -1
+    
+    def __iter__(self):
+        """Повертає сам об'єкт як ітератор"""
+        return self
+    
+    def __next__(self):
+        """
+        Повертає наступний елемент з парним індексом
+        
+        Returns:
+            Наступний елемент з парним індексом
+            
+        Raises:
+            StopIteration: коли досягнуто кінця структури даних
+        """
+        try:
+            # Зупинка, коли індекс виходить за межі
+            if self.index > self.max_index:
+                raise StopIteration
+            
+            # Отримуємо поточний елемент
+            current_element = self.data[self.index]
+            
+            # Збільшуємо індекс на 2 для наступного парного індексу
+            self.index += 2
+            
+            return current_element
+            
+        except StopIteration:
+            raise
+        except IndexError:
+            raise StopIteration
+        except Exception as e:
+            print(f"Помилка під час ітерації: {e}")
+            raise StopIteration
+
+
+def demonstrate_iterator():
+    """Демонстрація роботи ітератора"""
+    
+    print("=" * 60)
+    print("Завдання 3: Демонстрація власного ітератора")
+    print("=" * 60)
+    print()
+    
+    # Тест 1: Список чисел
+    print("Тест 1: Список чисел")
+    numbers = [10, 20, 30, 40, 50, 60, 70]
+    print(f"Вхідні дані: {numbers}")
+    print("Елементи з парними індексами:")
+    
+    even_iter = EvenIndexIterator(numbers)
+    for element in even_iter:
+        print(f"  - {element}")
+    print()
+    
+    # Тест 2: Рядок
+    print("Тест 2: Рядок")
+    text = "PythonIterator"
+    print(f"Вхідні дані: '{text}'")
+    print("Символи з парними індексами:")
+    
+    text_iter = EvenIndexIterator(text)
+    result_chars = []
+    for char in text_iter:
+        result_chars.append(char)
+        print(f"  - '{char}'")
+    
+    print(f"Результат: '{''.join(result_chars)}'")
+    print()
+    
+    # Тест 3: Матриця (список списків)
+    print("Тест 3: Матриця")
+    matrix = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+        [10, 11, 12]
+    ]
+    print("Вхідна матриця:")
+    for row in matrix:
+        print(f"  {row}")
+    
+    print("Рядки матриці з парними індексами:")
+    matrix_iter = EvenIndexIterator(matrix)
+    for i, row in enumerate(matrix_iter):
+        print(f"  Рядок {i*2}: {row}")
+    print()
+    
+    # Тест 4: Порожня структура
+    print("Тест 4: Порожній список")
+    empty_list = []
+    empty_iter = EvenIndexIterator(empty_list)
+    result = list(empty_iter)
+    print(f"Вхідні дані: {empty_list}")
+    print(f"Результат: {result}")
+    print()
+    
+    # Тест 5: Обробка помилок
+    print("Тест 5: Некоректні вхідні дані")
+    try:
+        invalid_iter = EvenIndexIterator(123)  # Число не підтримує індексацію
+        result = list(invalid_iter)
+        print(f"Результат: {result}")
+    except Exception as e:
+        print(f"Помилка: {e}")
+    print()
+
+
+def advanced_iterator_demo():
+    """Розширена демонстрація ітератора"""
+    
+    print("-" * 60)
+    print("Розширена демонстрація ітератора")
+    print("-" * 60)
+    print()
+    
+    # Використання в list comprehension
+    data = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+    result = [item.upper() for item in EvenIndexIterator(data)]
+    print(f"List comprehension: {result}")
+    
+    # Використання з функцією next()
+    iter_obj = EvenIndexIterator([1, 2, 3, 4, 5])
+    print("Ручне використання next():")
+    try:
+        while True:
+            item = next(iter_obj)
+            print(f"  - {item}")
+    except StopIteration:
+        print("  Ітерація завершена")
+    print()
+
+
+if __name__ == "__main__":
+    demonstrate_iterator()
+    advanced_iterator_demo()
