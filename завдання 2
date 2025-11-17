@@ -1,0 +1,224 @@
+def recursive_sum(elements):
+    """
+    Обчислює суму елементів списку рекурсивно
+    
+    Args:
+        elements (list): Список чисел для підсумовування
+        
+    Returns:
+        int/float: Сума всіх елементів списку
+    """
+    try:
+       
+        if not isinstance(elements, list):
+            raise TypeError("Вхідний параметр повинен бути списком")
+        
+
+        if not elements:
+            return 0
+        
+        
+        if not all(isinstance(x, (int, float)) for x in elements):
+            raise ValueError("Всі елементи списку повинні бути числами")
+        
+
+        return elements[0] + recursive_sum(elements[1:])
+        
+    except TypeError as e:
+        print(f"Помилка типу: {e}")
+        return 0
+    except ValueError as e:
+        print(f"Помилка значення: {e}")
+        return 0
+    except Exception as e:
+        print(f"Неочікувана помилка: {e}")
+        return 0
+
+
+def recursive_sum_detailed(elements, depth=0):
+    """
+    Рекурсивне обчислення суми з детальним виводом процесу
+    
+    Args:
+        elements (list): Список чисел
+        depth (int): Глибина рекурсії для відступів
+        
+    Returns:
+        int/float: Сума елементів
+    """
+    indent = "  " * depth
+    
+   
+    if not elements:
+        print(f"{indent}Базовий випадок: порожній список → 0")
+        return 0
+    
+    current = elements[0]
+    rest = elements[1:]
+    
+    print(f"{indent}Обробляємо: {current} + recursive_sum({rest})")
+    
+   
+    rest_sum = recursive_sum_detailed(rest, depth + 1)
+    result = current + rest_sum
+    
+    print(f"{indent}Повертаємо: {current} + {rest_sum} = {result}")
+    
+    return result
+
+
+def demonstrate_recursive_sum():
+    """Демонстрація роботи рекурсивної функції суми"""
+    
+    print("=" * 60)
+    print("Демонстрація рекурсивного обчислення суми списку")
+    print("=" * 60)
+    print()
+    
+    
+    test_1 = [1, 2, 3, 4, 5]
+    print(f"Тест 1: {test_1}")
+    print("Детальний процес рекурсії:")
+    result_1 = recursive_sum_detailed(test_1)
+    print(f"Фінальний результат: {result_1}")
+    print(f"Перевірка: sum({test_1}) = {sum(test_1)}")
+    print()
+    
+
+    test_2 = [42]
+    print(f"Тест 2: {test_2}")
+    result_2 = recursive_sum(test_2)
+    print(f"Результат: {result_2}")
+    print()
+    
+
+    test_3 = []
+    print(f"Тест 3: {test_3}")
+    result_3 = recursive_sum(test_3)
+    print(f"Результат: {result_3}")
+    print()
+
+    test_4 = [10, -5, 3, -2, 8]
+    print(f"Тест 4: {test_4}")
+    result_4 = recursive_sum(test_4)
+    print(f"Результат: {result_4}")
+    print(f"Перевірка: sum({test_4}) = {sum(test_4)}")
+    print()
+    
+
+    test_5 = [1.5, 2.7, 3.1, 4.9]
+    print(f"Тест 5: {test_5}")
+    result_5 = recursive_sum(test_5)
+    print(f"Результат: {result_5}")
+    print(f"Перевірка: sum({test_5}) = {sum(test_5)}")
+    print()
+
+
+def generate_test_lists():
+    """Генерація тестових списків різної довжини"""
+    
+    import random
+    
+    test_lists = []
+    
+
+    for length in [0, 1, 3, 5, 8]:
+        if length == 0:
+            test_list = []
+        else:
+            test_list = [random.randint(1, 100) for _ in range(length)]
+        test_lists.append(test_list)
+    
+    return test_lists
+
+
+def performance_comparison():
+    """Порівняння продуктивності рекурсивної та вбудованої функції sum"""
+    
+    import time
+    
+    print("=" * 60)
+    print("Порівняння продуктивності")
+    print("=" * 60)
+    print()
+    
+
+    large_list = list(range(1000))
+    
+
+    start_time = time.time()
+    recursive_result = recursive_sum(large_list)
+    recursive_time = time.time() - start_time
+
+    start_time = time.time()
+    builtin_result = sum(large_list)
+    builtin_time = time.time() - start_time
+    
+    print(f"Список довжиною: {len(large_list)} елементів")
+    print(f"Рекурсивна сума: {recursive_result}, час: {recursive_time:.6f} сек")
+    print(f"Вбудована sum(): {builtin_result}, час: {builtin_time:.6f} сек")
+    print(f"Різниця: {recursive_time/builtin_time:.2f} разів")
+    print()
+
+
+def error_handling_demo():
+    """Демонстрація обробки помилок"""
+    
+    print("=" * 60)
+    print("Демонстрація обробки помилок")
+    print("=" * 60)
+    print()
+    
+
+    print("Тест 1: Вхідні дані - не список")
+    result = recursive_sum("not a list")
+    print(f"Результат: {result}")
+    print()
+    
+
+    print("Тест 2: Список з нечисловими елементами")
+    test_data = [1, 2, "text", 4]
+    result = recursive_sum(test_data)
+    print(f"Результат: {result}")
+    print()
+
+
+def main():
+    """Головна функція програми"""
+    
+    # Основна демонстрація
+    demonstrate_recursive_sum()
+    
+    # Додаткова демонстрація з генерацією тестових даних
+    print("-" * 60)
+    print("Тестування на згенерованих даних:")
+    print("-" * 60)
+    print()
+    
+    test_lists = generate_test_lists()
+    for i, test_list in enumerate(test_lists, 1):
+        print(f"Тест {i}: {test_list}")
+        result = recursive_sum(test_list)
+        print(f"Результат: {result}")
+        print()
+    
+
+    error_handling_demo()
+    
+
+    print("-" * 60)
+    print("Порівняння для меншого списку:")
+    print("-" * 60)
+    print()
+    
+    small_list = list(range(100))
+    recursive_result = recursive_sum(small_list)
+    builtin_result = sum(small_list)
+    print(f"Список: {len(small_list)} елементів")
+    print(f"Рекурсивна сума: {recursive_result}")
+    print(f"Вбудована sum(): {builtin_result}")
+    print(f"Результати збігаються: {recursive_result == builtin_result}")
+
+
+if __name__ == "__main__":
+    main()
