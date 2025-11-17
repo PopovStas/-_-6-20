@@ -1,0 +1,222 @@
+def fibonacci_generator(limit, max_value=1000):
+    """
+    Генератор послідовності Фібоначчі з двома умовами зупинки
+    
+    Args:
+        limit (int): максимальна кількість елементів
+        max_value (int): максимальне значення елемента
+        
+    Yields:
+        int: наступне число Фібоначчі
+    """
+    try:
+        # Перевірка вхідних параметрів
+        if not isinstance(limit, int) or limit <= 0:
+            raise ValueError("Ліміт повинен бути додатним цілим числом")
+        
+        if not isinstance(max_value, (int, float)) or max_value <= 0:
+            raise ValueError("Максимальне значення повинно бути додатним числом")
+        
+        # Ініціалізація перших двох чисел Фібоначчі
+        a, b = 0, 1
+        count = 0
+        
+        print(f"Початок генерації послідовності Фібоначчі")
+        print(f"Умови зупинки: {limit} елементів або значення > {max_value}")
+        print()
+        
+        while count < limit:
+            current = a
+            
+            # Перевірка другої умови зупинки
+            if current > max_value:
+                print(f"Зупинка: досягнуто максимальне значення {max_value}")
+                return
+            
+            yield current
+            count += 1
+            
+            # Оновлення значень для наступної ітерації
+            a, b = b, a + b
+            
+    except ValueError as e:
+        print(f"Помилка значення: {e}")
+        return
+    except Exception as e:
+        print(f"Неочікувана помилка: {e}")
+        return
+
+
+def prime_generator(limit):
+    """
+    Генератор простих чисел
+    
+    Args:
+        limit (int): кількість простих чисел для генерації
+        
+    Yields:
+        int: наступне просте число
+    """
+    def is_prime(n):
+        """Перевіряє, чи є число простим"""
+        if n < 2:
+            return False
+        for i in range(2, int(n**0.5) + 1):
+            if n % i == 0:
+                return False
+        return True
+    
+    count = 0
+    num = 2
+    
+    while count < limit:
+        if is_prime(num):
+            yield num
+            count += 1
+        num += 1
+
+
+def demonstrate_generators():
+    """Демонстрація роботи генераторів"""
+    
+    print("=" * 60)
+    print("Завдання 4: Демонстрація генераторів")
+    print("=" * 60)
+    print()
+    
+    # Демонстрація генератора Фібоначчі
+    print("Генератор послідовності Фібоначчі")
+    print("-" * 40)
+    
+    # Тест 1: Обмеження за кількістю
+    print("Тест 1: Обмеження 10 елементів")
+    fib_gen_1 = fibonacci_generator(limit=10)
+    fib_sequence_1 = list(fib_gen_1)
+    print(f"Результат: {fib_sequence_1}")
+    print()
+    
+    # Тест 2: Обмеження за значенням
+    print("Тест 2: Обмеження за значенням (max_value=50)")
+    fib_gen_2 = fibonacci_generator(limit=100, max_value=50)
+    fib_sequence_2 = []
+    for num in fib_gen_2:
+        fib_sequence_2.append(num)
+        print(f"  Згенеровано: {num}")
+    print(f"Фінальна послідовність: {fib_sequence_2}")
+    print()
+    
+    # Тест 3: Генератор простих чисел
+    print("Генератор простих чисел")
+    print("-" * 40)
+    
+    prime_gen = prime_generator(limit=8)
+    primes = []
+    print("Перші 8 простих чисел:")
+    for prime in prime_gen:
+        primes.append(prime)
+        print(f"  - {prime}")
+    
+    print(f"Повний список: {primes}")
+    print()
+
+
+def advanced_generator_features():
+    """Демонстрація розширених можливостей генераторів"""
+    
+    print("-" * 60)
+    print("Розширені можливості генераторів")
+    print("-" * 60)
+    print()
+    
+    # Генератор з передачею значень
+    def interactive_generator():
+        """Генератор, який отримує значення ззовні"""
+        total = 0
+        while True:
+            value = yield total
+            if value is None:
+                break
+            total += value
+            print(f"Додано {value}, загальна сума: {total}")
+    
+    print("Інтерактивний генератор суми:")
+    gen = interactive_generator()
+    next(gen)  # Запуск генератора
+    
+    for num in [5, 10, 3, 8]:
+        result = gen.send(num)
+    
+    gen.close()
+    print(f"Фінальна сума: {result}")
+    print()
+    
+    # Генераторний вираз
+    print("Генераторний вираз (квадрати чисел):")
+    squares_gen = (x**2 for x in range(1, 6))
+    squares = list(squares_gen)
+    print(f"Квадрати чисел 1-5: {squares}")
+    print()
+    
+    # Pipeline з генераторів
+    print("Pipeline з генераторів:")
+    
+    def numbers_gen(n):
+        for i in range(n):
+            yield i
+    
+    def square_gen(sequence):
+        for x in sequence:
+            yield x ** 2
+    
+    def filter_even_gen(sequence):
+        for x in sequence:
+            if x % 2 == 0:
+                yield x
+    
+    # Створення pipeline
+    pipeline = filter_even_gen(square_gen(numbers_gen(10)))
+    result = list(pipeline)
+    print(f"Квадрати парних чисел 0-9: {result}")
+
+
+def generator_performance():
+    """Демонстрація переваг генераторів для пам'яті"""
+    
+    print("-" * 60)
+    print("Переваги генераторів для пам'яті")
+    print("-" * 60)
+    print()
+    
+    import sys
+    
+    # Звичайний список
+    def create_list(n):
+        return [i**2 for i in range(n)]
+    
+    # Генератор
+    def create_generator(n):
+        for i in range(n):
+            yield i**2
+    
+    n = 1000000
+    
+    # Порівняння використання пам'яті
+    list_memory = sys.getsizeof(create_list(1000))  # Тестуємо на меншому діапазоні
+    gen_memory = sys.getsizeof(create_generator(1000))
+    
+    print("Порівняння використання пам'яті:")
+    print(f"  Список 1000 елементів: {list_memory} байт")
+    print(f"  Генератор: {gen_memory} байт")
+    print(f"  Економія пам'яті: {list_memory/gen_memory:.1f} разів")
+    print()
+    
+    print("Генератори ефективні для:")
+    print("  - Великих наборів даних")
+    print("  - Потокової обробки")
+    print("  - Lazy evaluation (ліниві обчислення)")
+
+
+if __name__ == "__main__":
+    demonstrate_generators()
+    advanced_generator_features()
+    generator_performance()
