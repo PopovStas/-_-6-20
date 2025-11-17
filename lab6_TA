@@ -1,0 +1,134 @@
+def filter_tuples_by_condition(tuple_list):
+    """
+    Фільтрує список кортежів, залишаючи ті, де другий елемент більший за перший
+    
+    Args:
+        tuple_list (list): Список кортежів з числовими значеннями
+        
+    Returns:
+        list: Відфільтрований список кортежів
+    """
+    try:
+        
+        if not isinstance(tuple_list, list):
+            raise TypeError("Вхідний параметр повинен бути списком")
+        
+        if not tuple_list:
+            return []
+        
+        
+        filtered_list = [
+            tuple_item for tuple_item in tuple_list 
+            if (isinstance(tuple_item, tuple) and 
+                len(tuple_item) >= 2 and 
+                isinstance(tuple_item[0], (int, float)) and 
+                isinstance(tuple_item[1], (int, float)) and 
+                tuple_item[1] > tuple_item[0])
+        ]
+        
+        return filtered_list
+        
+    except TypeError as e:
+        print(f"Помилка типу: {e}")
+        return []
+    except Exception as e:
+        print(f"Неочікувана помилка: {e}")
+        return []
+
+
+def demonstrate_function():
+    """Демонстрація роботи функції з різними прикладами"""
+    
+    print("Демонстрація роботи функції фільтрації кортежів\n")
+    
+
+    test_data_1 = [(1, 5), (3, 2), (10, 15), (7, 7), (0, 8)]
+    print(f"Тест 1 - Вхідні дані: {test_data_1}")
+    result_1 = filter_tuples_by_condition(test_data_1)
+    print(f"Результат: {result_1}")
+    print("Очікуваний результат: [(1, 5), (10, 15), (0, 8)]")
+    print()
+    
+   
+    test_data_2 = []
+    print(f"Тест 2 - Вхідні дані: {test_data_2}")
+    result_2 = filter_tuples_by_condition(test_data_2)
+    print(f"Результат: {result_2}")
+    print("Очікуваний результат: []")
+    print()
+    
+
+    test_data_3 = [("a", "b"), (1, 2), (3.5, 4.2), (5, "text")]
+    print(f"Тест 3 - Вхідні дані: {test_data_3}")
+    result_3 = filter_tuples_by_condition(test_data_3)
+    print(f"Результат: {result_3}")
+    print("Очікуваний результат: [(1, 2), (3.5, 4.2)]")
+    print()
+    
+
+    test_data_4 = [(1,), (2, 3, 4), (5, 6)]
+    print(f"Тест 4 - Вхідні дані: {test_data_4}")
+    result_4 = filter_tuples_by_condition(test_data_4)
+    print(f"Результат: {result_4}")
+    print("Очікуваний результат: [(5, 6)]")
+    print()
+    
+
+    test_data_5 = "not a list"
+    print(f"Тест 5 - Вхідні дані: {test_data_5}")
+    result_5 = filter_tuples_by_condition(test_data_5)
+    print(f"Результат: {result_5}")
+    print("Очікуваний результат: [] (з повідомленням про помилку)")
+    print()
+
+
+def generate_test_data():
+    """Генерація тестових даних для демонстрації"""
+    
+    # Генерація списку кортежів за допомогою list comprehension
+    import random
+    
+    test_data = [
+        (random.randint(1, 20), random.randint(1, 20)) 
+        for _ in range(10)
+    ]
+    
+    print("Згенеровані тестові дані:")
+    for i, pair in enumerate(test_data, 1):
+        condition = "✓" if pair[1] > pair[0] else "✗"
+        print(f"  {i}. {pair} {condition}")
+    
+    return test_data
+
+
+def main():
+    """Головна функція програми"""
+    
+    print("=" * 60)
+    print("Фільтрація списку кортежів за умовою: другий елемент > першого")
+    print("=" * 60)
+    print()
+    
+
+    demonstrate_function()
+    
+    print("-" * 60)
+    print("Додаткова демонстрація з згенерованими даними:")
+    print("-" * 60)
+    print()
+    
+
+    generated_data = generate_test_data()
+    print(f"\nВхідні дані: {generated_data}")
+    result = filter_tuples_by_condition(generated_data)
+    print(f"Результат фільтрації: {result}")
+    
+
+    print(f"\nСтатистика:")
+    print(f"  Всього кортежів: {len(generated_data)}")
+    print(f"  Відфільтровано: {len(result)}")
+    print(f"  Відсоток відфільтрованих: {len(result)/len(generated_data)*100:.1f}%")
+
+
+if __name__ == "__main__":
+    main()
